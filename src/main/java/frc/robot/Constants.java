@@ -13,7 +13,13 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
+
+  public static class CANBusIDs{
+    public static final int pigeonID = 0;
+  }
+
+  public static class DrivetrainConstants{
+    public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 4;
     public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(90.87 + 180.0);
@@ -32,6 +38,11 @@ public final class Constants {
     public static final int BACK_RIGHT_MODULE_STEER_MOTOR = 2;
     public static final int BACK_RIGHT_MODULE_STEER_ENCODER = 1;
     public static final double BACK_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(78.13 + 180.0);
+
+    public static final double kDrivetrainTrackwidthMeters = 1;
+    public static final double kDrivetrainWheelbaseMeters = 1;
+  }
+
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
