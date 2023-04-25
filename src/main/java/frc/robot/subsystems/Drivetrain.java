@@ -9,13 +9,16 @@ import frc.robot.Constants.CANBusIDs;
 import frc.robot.Constants.DrivetrainConstants;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -43,6 +46,8 @@ public class Drivetrain extends SubsystemBase {
     // Back right
     new Translation2d(-DrivetrainConstants.kDrivetrainTrackwidthMeters / 2.0, -DrivetrainConstants.kDrivetrainWheelbaseMeters / 2.0));
 
+    // private final SwerveDrivePoseEstimator estimator;
+
     
 
   /** Creates a new Drivetrain. */
@@ -69,7 +74,8 @@ public class Drivetrain extends SubsystemBase {
             mk4ModuleConfiguration, Mk4iSwerveModuleHelper.GearRatio.L3, DrivetrainConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
             DrivetrainConstants.BACK_RIGHT_MODULE_STEER_MOTOR, DrivetrainConstants.BACK_RIGHT_MODULE_STEER_ENCODER, DrivetrainConstants.BACK_RIGHT_MODULE_STEER_OFFSET);
 
-
+    
+    
     
   }
 
