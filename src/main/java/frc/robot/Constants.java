@@ -19,6 +19,11 @@ public final class Constants {
   }
 
   public static class DrivetrainConstants{
+    public static final double DRIVETRAIN_TRACKWIDTH_METERS = 0.2794;
+    public static final double DRIVETRAIN_WHEELBASE_METERS = 0.2794;
+
+    public static final int DRIVETRAIN_PIGEON_ID = 0;
+
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 7;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 8;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 4;
