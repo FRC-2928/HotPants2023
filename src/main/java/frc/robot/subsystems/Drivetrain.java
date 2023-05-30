@@ -5,6 +5,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainConstants;
 
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
+import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,9 +21,21 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Drivetrain extends SubsystemBase {
-    private static final double MAX_VOLTAGE = 12.0;
-    public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.14528;
-    public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
+  private static final double MAX_VOLTAGE = 12.0;
+  /**
+   * The maximum velocity of the robot in meters per second.
+   * This is a measure of how fast the robot should be able to drive in a straight line.
+   * The formula for calculating the theoretical maximum velocity is:
+   *  <Motor free speed RPM> / 60 * <Drive reduction> * <Wheel diameter meters> * PI
+   * The motor free speed for the Falcon500 is 6380
+   */
+  // TODO Which model do we have? L1, L2, L3, L4
+  public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
+    SdsModuleConfigurations.MK4_L2.getDriveReduction() *
+    SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+//     public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.14528;
+    
+  public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
             Math.hypot(DrivetrainConstants.DRIVETRAIN_TRACKWIDTH_METERS / 2.0, DrivetrainConstants.DRIVETRAIN_WHEELBASE_METERS / 2.0);
 
     private final SwerveModule frontLeftModule;
@@ -55,6 +68,7 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
         ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("Drivetrain");
 
+        // TODO Which model do we have? L1, L2, L3, L4
         frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
                 shuffleboardTab.getLayout("Front Left Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
@@ -135,18 +149,19 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
       
-        odometry.update(Rotation2d.fromDegrees(gyroscope.getFusedHeading()),
-        new SwerveModulePosition[] {frontLeftPosition,
-          frontRightPosition,
-          backLeftPosition,
-          backRightPosition}
-        );
+      odometry.update(Rotation2d.fromDegrees(gyroscope.getFusedHeading()),
+      new SwerveModulePosition[] {frontLeftPosition,
+                                  frontRightPosition,
+                                  backLeftPosition,
+                                  backRightPosition}
+      );
 
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+      SwerveModuleState[] states = kinematics.toSwerveModuleStates(chassisSpeeds);
+      SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_VELOCITY_METERS_PER_SECOND);
 
-        frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
-        frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
-        backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
-        backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
+      frontLeftModule.set(states[0].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[0].angle.getRadians());
+      frontRightModule.set(states[1].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[1].angle.getRadians());
+      backLeftModule.set(states[2].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[2].angle.getRadians());
+      backRightModule.set(states[3].speedMetersPerSecond / MAX_VELOCITY_METERS_PER_SECOND * MAX_VOLTAGE, states[3].angle.getRadians());
     }
 }
