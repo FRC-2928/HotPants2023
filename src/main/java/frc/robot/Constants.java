@@ -15,7 +15,7 @@ package frc.robot;
 public final class Constants {
 
   public static class CANBusIDs{
-    public static final int pigeonID = 0;
+    
   }
 
   public static class DrivetrainConstants{
@@ -27,17 +27,19 @@ public final class Constants {
 
     
 
-    public static final int DRIVETRAIN_PIGEON_ID = 0;
+    public static final int DRIVETRAIN_PIGEON_ID = 10;
 
     public static final int FRONT_LEFT_MODULE_DRIVE_MOTOR = 15;
     public static final int FRONT_LEFT_MODULE_STEER_MOTOR = 16;
     public static final int FRONT_LEFT_MODULE_STEER_ENCODER = 16;
     public static final double FRONT_LEFT_MODULE_STEER_OFFSET = -Math.toRadians(90.87 + 180.0);
+    
 
     public static final int FRONT_RIGHT_MODULE_DRIVE_MOTOR = 4;
     public static final int FRONT_RIGHT_MODULE_STEER_MOTOR = 3;
     public static final int FRONT_RIGHT_MODULE_STEER_ENCODER = 3;
     public static final double FRONT_RIGHT_MODULE_STEER_OFFSET = -Math.toRadians(35.59 + 180.0);
+    
 
     public static final int BACK_LEFT_MODULE_DRIVE_MOTOR = 18;
     public static final int BACK_LEFT_MODULE_STEER_MOTOR = 17;

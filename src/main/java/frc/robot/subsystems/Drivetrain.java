@@ -1,10 +1,12 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import frc.robot.Constants;
 import frc.robot.Constants.DrivetrainConstants;
 
-import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
+// import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
+import com.swervedrivespecialties.swervelib.Mk4iSwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 import com.swervedrivespecialties.swervelib.SwerveModule;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -31,8 +33,8 @@ public class Drivetrain extends SubsystemBase {
    */
   // TODO Which model do we have? L1, L2, L3, L4
   public static final double MAX_VELOCITY_METERS_PER_SECOND = 6380.0 / 60.0 *
-    SdsModuleConfigurations.MK4_L2.getDriveReduction() *
-    SdsModuleConfigurations.MK4_L2.getWheelDiameter() * Math.PI;
+    SdsModuleConfigurations.MK4I_L2.getDriveReduction() *
+    SdsModuleConfigurations.MK4I_L2.getWheelDiameter() * Math.PI;
 //     public static final double MAX_VELOCITY_METERS_PER_SECOND = 4.14528;
     
   public static final double MAX_ANGULAR_VELOCITY_RADIANS_PER_SECOND = MAX_VELOCITY_METERS_PER_SECOND /
@@ -48,7 +50,7 @@ public class Drivetrain extends SubsystemBase {
     private final SwerveModulePosition backLeftPosition = new SwerveModulePosition(0, new Rotation2d(0));
     private final SwerveModulePosition backRightPosition = new SwerveModulePosition(0, new Rotation2d(0));
 
-    private final PigeonIMU gyroscope = new PigeonIMU(DrivetrainConstants.DRIVETRAIN_PIGEON_ID);
+    private final Pigeon2 gyroscope = new Pigeon2(DrivetrainConstants.DRIVETRAIN_PIGEON_ID);
 
     // Locations for the swerve drive modules relative to the robot center.
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
@@ -68,45 +70,45 @@ public class Drivetrain extends SubsystemBase {
     public Drivetrain() {
         ShuffleboardTab shuffleboardTab = Shuffleboard.getTab("Drivetrain");
 
-        // TODO Which model do we have? L1, L2, L3, L4
-        frontLeftModule = Mk4SwerveModuleHelper.createFalcon500(
+        // TODO Which model do we have? L1, L2, L3, L4 - L2!
+        frontLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
                 shuffleboardTab.getLayout("Front Left Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(0, 0),
-                Mk4SwerveModuleHelper.GearRatio.L1,
+                Mk4iSwerveModuleHelper.GearRatio.L2,
                 DrivetrainConstants.FRONT_LEFT_MODULE_DRIVE_MOTOR,
                 DrivetrainConstants.FRONT_LEFT_MODULE_STEER_MOTOR,
                 DrivetrainConstants.FRONT_LEFT_MODULE_STEER_ENCODER,
                 DrivetrainConstants.FRONT_LEFT_MODULE_STEER_OFFSET
         );
 
-        frontRightModule = Mk4SwerveModuleHelper.createFalcon500(
+        frontRightModule = Mk4iSwerveModuleHelper.createFalcon500(
                 shuffleboardTab.getLayout("Front Right Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(2, 0),
-                Mk4SwerveModuleHelper.GearRatio.L1,
+                Mk4iSwerveModuleHelper.GearRatio.L2,
                 DrivetrainConstants.FRONT_RIGHT_MODULE_DRIVE_MOTOR,
                 DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_MOTOR,
                 DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_ENCODER,
                 DrivetrainConstants.FRONT_RIGHT_MODULE_STEER_OFFSET
         );
 
-        backLeftModule = Mk4SwerveModuleHelper.createFalcon500(
+        backLeftModule = Mk4iSwerveModuleHelper.createFalcon500(
                 shuffleboardTab.getLayout("Back Left Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(4, 0),
-                Mk4SwerveModuleHelper.GearRatio.L1,
+                Mk4iSwerveModuleHelper.GearRatio.L2,
                 DrivetrainConstants.BACK_LEFT_MODULE_DRIVE_MOTOR,
                 DrivetrainConstants.BACK_LEFT_MODULE_STEER_MOTOR,
                 DrivetrainConstants.BACK_LEFT_MODULE_STEER_ENCODER,
                 DrivetrainConstants.BACK_LEFT_MODULE_STEER_OFFSET
         );
 
-        backRightModule = Mk4SwerveModuleHelper.createFalcon500(
+        backRightModule = Mk4iSwerveModuleHelper.createFalcon500(
                 shuffleboardTab.getLayout("Back Right Module", BuiltInLayouts.kList)
                         .withSize(2, 4)
                         .withPosition(6, 0),
-                Mk4SwerveModuleHelper.GearRatio.L1,
+                Mk4iSwerveModuleHelper.GearRatio.L2,
                 DrivetrainConstants.BACK_RIGHT_MODULE_DRIVE_MOTOR,
                 DrivetrainConstants.BACK_RIGHT_MODULE_STEER_MOTOR,
                 DrivetrainConstants.BACK_RIGHT_MODULE_STEER_ENCODER,
@@ -114,7 +116,7 @@ public class Drivetrain extends SubsystemBase {
         );
 
         odometry = new SwerveDriveOdometry(kinematics, 
-                              Rotation2d.fromDegrees(gyroscope.getFusedHeading()),
+                              Rotation2d.fromDegrees(gyroscope.getYaw()),
                               new SwerveModulePosition[] {frontLeftPosition,
                                                           frontRightPosition,
                                                           backLeftPosition,
@@ -127,7 +129,7 @@ public class Drivetrain extends SubsystemBase {
 
     public void zeroGyroscope() {
         odometry.resetPosition(
-          Rotation2d.fromDegrees(gyroscope.getFusedHeading()),       
+          Rotation2d.fromDegrees(gyroscope.getYaw()),       
         
                 new SwerveModulePosition[] {frontLeftPosition,
                   frontRightPosition,
@@ -149,7 +151,7 @@ public class Drivetrain extends SubsystemBase {
     @Override
     public void periodic() {
       
-      odometry.update(Rotation2d.fromDegrees(gyroscope.getFusedHeading()),
+      odometry.update(Rotation2d.fromDegrees(gyroscope.getYaw()),
       new SwerveModulePosition[] {frontLeftPosition,
                                   frontRightPosition,
                                   backLeftPosition,
